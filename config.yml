@@ -1,0 +1,32 @@
+# Headshot players with arrows if shot from far enough away.
+# Copyright (C) 2013 Andrew Stevanus (Hoot215) <hoot893@gmail.com>
+# 
+# Copying and distribution of this file, with or without modification,
+# are permitted in any medium without royalty provided the copyright
+# notice and this notice are preserved.  This file is offered as-is,
+# without any warranty.
+# 
+# 
+# min-distance: The minimum distance the arrow must travel before it starts
+#               accumulating extra damage
+# extra-damage-per-block: How much extra damage is added to the arrow per block
+#                         after it travels 'min-distance'
+# headshot-damage: The minimum total damage (regular + extra) for a hit to be
+#                  classified as a headshot
+# strings: Messages sent to the player
+#   headshot-shooter: The message to be sent to the shooter if they headshot a player
+#                     ('%s' is replaced by the target player's name)
+#   headshot-player: The message to be sent to the player if they are headshotted
+#                    ('%s' is replaced by the shooter's name)
+#   headshot-death-message: The replacement for the default death message when a
+#                           a player headshots another
+#                           (The first '%s' is replaced by the target player's name,
+#                           and the second '%s' is replaced by the shooter's name)
+
+min-distance: 10.0
+extra-damage-per-block: 1.5
+headshot-damage: 20.0
+strings:
+  headshot-shooter: '&eYou have headshotted %s!'
+  headshot-player: '&cYou have been headshotted by %s!'
+  headshot-death-message: '&b%s was headshotted by %s'
