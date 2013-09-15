@@ -21,7 +21,9 @@
 #   headshot-death-message: The replacement for the default death message when a
 #                           a player headshots another
 #                           (The first '%s' is replaced by the target player's name,
-#                           and the second '%s' is replaced by the shooter's name)
+#                           the second '%s' is replaced by the shooter's name, and
+#                           the third '%s' is replaced by the distance the
+#                           arrow travelled)
 
 min-distance: 10.0
 extra-damage-per-block: 1.5
@@ -29,4 +31,4 @@ headshot-damage: 20.0
 strings:
   headshot-shooter: '&eYou have headshotted %s!'
   headshot-player: '&cYou have been headshotted by %s!'
-  headshot-death-message: '&b%s was headshotted by %s'
+  headshot-death-message: '&b%s was headshotted by %s from %sm away'

@@ -60,7 +60,7 @@ public class EntityListener implements Listener
                 * (distance - min);
         event.setDamage(damage);
         player.setLastDamageCause(event);
-        plugin.setLastHeadshot(player, event);
+        plugin.setLastHeadshot(player, new Hit(event, distance));
         if (damage >= plugin.getConfig().getDouble("headshot-damage"))
           {
             String shooterMessage =

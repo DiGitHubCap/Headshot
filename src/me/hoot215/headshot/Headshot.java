@@ -22,14 +22,13 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Headshot extends JavaPlugin
   {
     private static Headshot instance;
-    private final Map<Player, EntityDamageByEntityEvent> headshots =
-        new WeakHashMap<Player, EntityDamageByEntityEvent>();
+    private final Map<Player, Hit> headshots =
+        new WeakHashMap<Player, Hit>();
     
     public static Headshot getInstance ()
       {
@@ -41,14 +40,14 @@ public class Headshot extends JavaPlugin
         return headshots.containsKey(player);
       }
     
-    public EntityDamageByEntityEvent getLastHeadshot (Player player)
+    public Hit getLastHeadshot (Player player)
       {
         return headshots.get(player);
       }
     
-    public void setLastHeadshot (Player player, EntityDamageByEntityEvent event)
+    public void setLastHeadshot (Player player, Hit hit)
       {
-        headshots.put(player, event);
+        headshots.put(player, hit);
       }
     
     @Override

@@ -24,7 +24,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 public class PlayerListener implements Listener
@@ -37,15 +36,15 @@ public class PlayerListener implements Listener
         Player player = event.getEntity();
         if ( !plugin.hasLastHeadshot(player))
           return;
-        EntityDamageByEntityEvent lastHeadshot =
-            plugin.getLastHeadshot(event.getEntity());
-        if (lastHeadshot == event.getEntity().getLastDamageCause())
+        Hit lastHeadshot = plugin.getLastHeadshot(event.getEntity());
+        if (lastHeadshot.getEvent() == event.getEntity().getLastDamageCause())
           {
             event.setDeathMessage(String.format(ChatColor
                 .translateAlternateColorCodes('&', plugin.getConfig()
                     .getString("strings.headshot-death-message")), player
-                .getName(), ((Player) ((Arrow) lastHeadshot.getDamager())
-                .getShooter()).getName()));
+                .getName(), ((Player) ((Arrow) lastHeadshot.getEvent()
+                .getDamager()).getShooter()).getName(), String
+                .valueOf((int) lastHeadshot.getDistance())));
           }
       }
   }
