@@ -23,6 +23,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -38,10 +39,10 @@ public class EntityListener implements Listener
     public void onEntityDamageByEntity (EntityDamageByEntityEvent event)
       {
         if ( ! (event.getDamager() instanceof Arrow)
-            || ! (event.getEntity() instanceof Player))
+            || ! (event.getEntity() instanceof LivingEntity))
           return;
         Arrow arrow = (Arrow) event.getDamager();
-        Player player = (Player) event.getEntity();
+        LivingEntity entity = (LivingEntity) event.getEntity();
         if ( ! (arrow.getShooter() instanceof Player))
           return;
         Player shooter = (Player) arrow.getShooter();
@@ -59,20 +60,26 @@ public class EntityListener implements Listener
             plugin.getConfig().getDouble("extra-damage-per-block")
                 * (distance - min);
         event.setDamage(damage);
-        player.setLastDamageCause(event);
-        plugin.setLastHeadshot(player, new Hit(event, distance));
-        if (damage >= plugin.getConfig().getDouble("headshot-damage"))
+        if (entity instanceof Player)
           {
-            String shooterMessage =
-                String.format(ChatColor.translateAlternateColorCodes('&',
-                    plugin.getConfig().getString("strings.headshot-shooter")),
-                    player.getName());
-            shooter.sendMessage(shooterMessage);
-            String playerMessage =
-                String.format(ChatColor.translateAlternateColorCodes('&',
-                    plugin.getConfig().getString("strings.headshot-player")),
-                    shooter.getName());
-            player.sendMessage(playerMessage);
+            Player player = (Player) entity;
+            player.setLastDamageCause(event);
+            plugin.setLastHeadshot(player, new Hit(event, distance));
+            if (damage >= plugin.getConfig().getDouble("headshot-damage"))
+              {
+                String shooterMessage =
+                    String.format(ChatColor.translateAlternateColorCodes('&',
+                        plugin.getConfig()
+                            .getString("strings.headshot-shooter")), player
+                        .getName());
+                shooter.sendMessage(shooterMessage);
+                String playerMessage =
+                    String.format(ChatColor
+                        .translateAlternateColorCodes('&', plugin.getConfig()
+                            .getString("strings.headshot-player")), shooter
+                        .getName());
+                player.sendMessage(playerMessage);
+              }
           }
       }
   }
