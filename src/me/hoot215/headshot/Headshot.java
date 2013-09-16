@@ -18,8 +18,12 @@
 
 package me.hoot215.headshot;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.WeakHashMap;
+
+import me.hoot215.headshot.metrics.Metrics;
+import me.hoot215.headshot.metrics.Metrics.Graph;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,8 +31,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Headshot extends JavaPlugin
   {
     private static Headshot instance;
-    private final Map<Player, Hit> headshots =
-        new WeakHashMap<Player, Hit>();
+    private final Map<Player, Hit> headshots = new WeakHashMap<Player, Hit>();
     
     public static Headshot getInstance ()
       {
@@ -73,6 +76,47 @@ public class Headshot extends JavaPlugin
             .registerEvents(new PlayerListener(), this);
         this.getServer().getPluginManager()
             .registerEvents(new ProjectileListener(), this);
+        
+        try
+          {
+            Metrics metrics = new Metrics(this);
+            Graph graph = metrics.createGraph("Enabled Headshot Modes");
+            graph.addPlotter(new Metrics.Plotter("Both")
+              {
+                
+                @Override
+                public int getValue ()
+                  {
+                    return getConfig().getBoolean("distance.enabled")
+                        && getConfig().getBoolean("hitboxes.enabled") ? 1 : 0;
+                  }
+              });
+            graph.addPlotter(new Metrics.Plotter("Distance")
+              {
+                
+                @Override
+                public int getValue ()
+                  {
+                    return getConfig().getBoolean("distance.enabled")
+                        && !getConfig().getBoolean("hitboxes.enabled") ? 1 : 0;
+                  }
+              });
+            graph.addPlotter(new Metrics.Plotter("Hitboxes")
+              {
+                
+                @Override
+                public int getValue ()
+                  {
+                    return !getConfig().getBoolean("distance.enabled")
+                        && getConfig().getBoolean("hitboxes.enabled") ? 1 : 0;
+                  }
+              });
+            metrics.start();
+          }
+        catch (IOException e)
+          {
+            e.printStackTrace();
+          }
         
         this.getLogger().info("Is now enabled");
       }
