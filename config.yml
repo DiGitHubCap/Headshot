@@ -42,7 +42,7 @@ distance:
 hitboxes:
   enabled: true
   head:
-    multiplier: 3.0
+    multiplier: 2.0
   torso:
     multiplier: 1.0
   legs:
