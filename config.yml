@@ -7,12 +7,20 @@
 # without any warranty.
 # 
 # 
-# min-distance: The minimum distance the arrow must travel before it starts
-#               accumulating extra damage
-# extra-damage-per-block: How much extra damage is added to the arrow per block
-#                         after it travels 'min-distance'
-# headshot-damage: The minimum total damage (regular + extra) for a hit to be
-#                  classified as a headshot
+# distance:
+#   enabled: Whether or not damage accumulation based on distance is enabled 
+#   considered-headshot: Whether or not damage accumulation is considered a headshot
+#                        when it's above 'headshot-damage'
+#   min-distance: The minimum distance the arrow must travel before it starts
+#                 accumulating extra damage
+#   extra-damage-per-block: How much extra damage is added to the arrow per block
+#                           after it travels 'min-distance'
+#   headshot-damage: The minimum total damage (regular + extra) for a hit to be
+#                    classified as a headshot (if 'considered-headshot' is true)
+# hitboxes:
+#   enabled: Whether or not damage multipliers based on hitboxes are enabled
+#   [body part]:
+#     multiplier: The damage multiplier for this body part
 # strings: Messages sent to the player
 #   headshot-shooter: The message to be sent to the shooter if they headshot a player
 #                     ('%s' is replaced by the target player's name)
@@ -25,9 +33,20 @@
 #                           the third '%s' is replaced by the distance the
 #                           arrow travelled)
 
-min-distance: 10.0
-extra-damage-per-block: 1.5
-headshot-damage: 20.0
+distance:
+  enabled: true
+  considered-headshot: true
+  min-distance: 10.0
+  extra-damage-per-block: 1.5
+  headshot-damage: 20.0
+hitboxes:
+  enabled: true
+  head:
+    multiplier: 3.0
+  torso:
+    multiplier: 1.0
+  legs:
+    multiplier: 0.7
 strings:
   headshot-shooter: '&eYou have headshotted %s!'
   headshot-player: '&cYou have been headshotted by %s!'

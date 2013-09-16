@@ -52,33 +52,88 @@ public class EntityListener implements Listener
         Location origin = (Location) values.get(0).value();
         Location loc = arrow.getLocation();
         double distance = origin.distance(loc);
-        double min = plugin.getConfig().getDouble("min-distance");
-        if (distance < min)
-          return;
-        double damage = event.getDamage();
-        damage +=
-            plugin.getConfig().getDouble("extra-damage-per-block")
-                * (distance - min);
-        event.setDamage(damage);
+        boolean announce = false;
+        boolean messaged = false;
+        distance : if (plugin.getConfig().getBoolean("distance.enabled"))
+          {
+            double min = plugin.getConfig().getDouble("min-distance");
+            if (distance < min)
+              break distance;
+            double damage = event.getDamage();
+            damage +=
+                plugin.getConfig().getDouble("extra-damage-per-block")
+                    * (distance - min);
+            event.setDamage(damage);
+            if (entity instanceof Player)
+              {
+                Player player = (Player) entity;
+                if (damage >= plugin.getConfig().getDouble("headshot-damage"))
+                  {
+                    announce = true;
+                    String shooterMessage =
+                        String.format(ChatColor.translateAlternateColorCodes(
+                            '&',
+                            plugin.getConfig().getString(
+                                "strings.headshot-shooter")), player.getName());
+                    shooter.sendMessage(shooterMessage);
+                    String playerMessage =
+                        String.format(ChatColor.translateAlternateColorCodes(
+                            '&',
+                            plugin.getConfig().getString(
+                                "strings.headshot-player")), shooter.getName());
+                    player.sendMessage(playerMessage);
+                    messaged = true;
+                  }
+              }
+          }
+        if (plugin.getConfig().getBoolean("hitboxes.enabled"))
+          {
+            Location relative = loc.clone().subtract(entity.getLocation());
+            // Head
+            if (relative.getY() >= 1.5)
+              {
+                announce = true;
+                event.setDamage(event.getDamage()
+                    * plugin.getConfig().getDouble("hitboxes.head.multiplier"));
+                if ( !messaged && entity instanceof Player)
+                  {
+                    Player player = (Player) entity;
+                    String shooterMessage =
+                        String.format(ChatColor.translateAlternateColorCodes(
+                            '&',
+                            plugin.getConfig().getString(
+                                "strings.headshot-shooter")), player.getName());
+                    shooter.sendMessage(shooterMessage);
+                    String playerMessage =
+                        String.format(ChatColor.translateAlternateColorCodes(
+                            '&',
+                            plugin.getConfig().getString(
+                                "strings.headshot-player")), shooter.getName());
+                    player.sendMessage(playerMessage);
+                  }
+              }
+            // Legs
+            else if (relative.getY() <= 0.8)
+              {
+                event.setDamage(event.getDamage()
+                    * plugin.getConfig().getDouble("hitboxes.legs.multiplier"));
+              }
+            // Torso
+            else
+              {
+                event
+                    .setDamage(event.getDamage()
+                        * plugin.getConfig().getDouble(
+                            "hitboxes.torso.multiplier"));
+              }
+          }
         if (entity instanceof Player)
           {
             Player player = (Player) entity;
             player.setLastDamageCause(event);
-            plugin.setLastHeadshot(player, new Hit(event, distance));
-            if (damage >= plugin.getConfig().getDouble("headshot-damage"))
+            if (announce)
               {
-                String shooterMessage =
-                    String.format(ChatColor.translateAlternateColorCodes('&',
-                        plugin.getConfig()
-                            .getString("strings.headshot-shooter")), player
-                        .getName());
-                shooter.sendMessage(shooterMessage);
-                String playerMessage =
-                    String.format(ChatColor
-                        .translateAlternateColorCodes('&', plugin.getConfig()
-                            .getString("strings.headshot-player")), shooter
-                        .getName());
-                player.sendMessage(playerMessage);
+                plugin.setLastHeadshot(player, new Hit(event, distance));
               }
           }
       }
