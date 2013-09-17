@@ -24,6 +24,7 @@ import java.util.WeakHashMap;
 
 import me.hoot215.headshot.metrics.Metrics;
 import me.hoot215.headshot.metrics.Metrics.Graph;
+import me.hoot215.updater.AutoUpdater;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -117,6 +118,8 @@ public class Headshot extends JavaPlugin
           {
             e.printStackTrace();
           }
+        
+        new AutoUpdater(this).start();
         
         this.getLogger().info("Is now enabled");
       }

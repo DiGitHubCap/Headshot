@@ -7,6 +7,7 @@
 # without any warranty.
 # 
 # 
+# auto-update-download: Whether or not to automatically download new updates
 # distance:
 #   enabled: Whether or not damage accumulation based on distance is enabled 
 #   considered-headshot: Whether or not damage accumulation is considered a headshot
@@ -33,6 +34,7 @@
 #                           the third '%s' is replaced by the distance the
 #                           arrow travelled)
 
+auto-update-download: true
 distance:
   enabled: true
   considered-headshot: true
