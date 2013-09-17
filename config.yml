@@ -21,6 +21,9 @@
 # hitboxes:
 #   enabled: Whether or not damage multipliers based on hitboxes are enabled
 #   [body part]:
+#     above/below: The relative Y distance away from the player's feet the arrow
+#                  has to hit above/below to count as a hit for this body part.
+#                  Raise or lower this, respectively, to have a smaller target
 #     multiplier: The damage multiplier for this body part
 # strings: Messages sent to the player
 #   headshot-shooter: The message to be sent to the shooter if they headshot a player
@@ -44,10 +47,12 @@ distance:
 hitboxes:
   enabled: true
   head:
+    above: 1.5
     multiplier: 2.0
   torso:
     multiplier: 1.0
   legs:
+    below: 0.8
     multiplier: 0.7
 strings:
   headshot-shooter: '&eYou have headshotted %s!'

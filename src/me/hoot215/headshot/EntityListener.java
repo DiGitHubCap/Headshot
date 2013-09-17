@@ -90,7 +90,8 @@ public class EntityListener implements Listener
           {
             Location relative = loc.clone().subtract(entity.getLocation());
             // Head
-            if (relative.getY() >= 1.5)
+            if (relative.getY() >= plugin.getConfig().getDouble(
+                "hitboxes.head.above"))
               {
                 announce = true;
                 event.setDamage(event.getDamage()
@@ -113,7 +114,8 @@ public class EntityListener implements Listener
                   }
               }
             // Legs
-            else if (relative.getY() <= 0.8)
+            else if (relative.getY() <= plugin.getConfig().getDouble(
+                "hitboxes.legs.below"))
               {
                 event.setDamage(event.getDamage()
                     * plugin.getConfig().getDouble("hitboxes.legs.multiplier"));
