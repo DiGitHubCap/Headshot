@@ -9,7 +9,7 @@
 # 
 # auto-update-download: Whether or not to automatically download new updates
 # distance:
-#   enabled: Whether or not damage accumulation based on distance is enabled 
+#   enabled: Whether or not damage accumulation based on distance is enabled
 #   considered-headshot: Whether or not damage accumulation is considered a headshot
 #                        when it's above 'headshot-damage'
 #   min-distance: The minimum distance the arrow must travel before it starts
