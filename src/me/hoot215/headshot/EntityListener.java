@@ -23,8 +23,15 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.NPC;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Snowman;
+import org.bukkit.entity.Witch;
+import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -39,7 +46,12 @@ public class EntityListener implements Listener
     public void onEntityDamageByEntity (EntityDamageByEntityEvent event)
       {
         if ( ! (event.getDamager() instanceof Arrow)
-            || ! (event.getEntity() instanceof LivingEntity))
+            || ! (event.getEntity() instanceof HumanEntity
+                || event.getEntity() instanceof NPC
+                || event.getEntity() instanceof Snowman
+                || event.getEntity() instanceof Creeper
+                || event.getEntity() instanceof Skeleton
+                || event.getEntity() instanceof Witch || event.getEntity() instanceof Zombie))
           return;
         Arrow arrow = (Arrow) event.getDamager();
         LivingEntity entity = (LivingEntity) event.getEntity();

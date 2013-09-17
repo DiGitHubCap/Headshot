@@ -8,7 +8,7 @@
 
 name: Headshot
 main: me.hoot215.headshot.Headshot
-version: 1.3
+version: 1.4
 author: Hoot215
 permissions:
   headshot:
