@@ -96,6 +96,11 @@ public class EntityListener implements Listener
                 announce = true;
                 event.setDamage(event.getDamage()
                     * plugin.getConfig().getDouble("hitboxes.head.multiplier"));
+                for (String s : plugin.getConfig().getStringList(
+                    "hitboxes.head.effects"))
+                  {
+                    plugin.applyEffect(entity, s);
+                  }
                 if ( !messaged && entity instanceof Player)
                   {
                     Player player = (Player) entity;
@@ -119,6 +124,11 @@ public class EntityListener implements Listener
               {
                 event.setDamage(event.getDamage()
                     * plugin.getConfig().getDouble("hitboxes.legs.multiplier"));
+                for (String s : plugin.getConfig().getStringList(
+                    "hitboxes.legs.effects"))
+                  {
+                    plugin.applyEffect(entity, s);
+                  }
               }
             // Torso
             else
@@ -127,6 +137,11 @@ public class EntityListener implements Listener
                     .setDamage(event.getDamage()
                         * plugin.getConfig().getDouble(
                             "hitboxes.torso.multiplier"));
+                for (String s : plugin.getConfig().getStringList(
+                    "hitboxes.torso.effects"))
+                  {
+                    plugin.applyEffect(entity, s);
+                  }
               }
           }
         if (entity instanceof Player)

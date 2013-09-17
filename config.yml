@@ -25,6 +25,21 @@
 #                  has to hit above/below to count as a hit for this body part.
 #                  Raise or lower this, respectively, to have a smaller target
 #     multiplier: The damage multiplier for this body part
+#     effects: A list of effects to be applied when this body part is hit
+#              Syntax: Probability:Type:Type_Options
+#                Probability is a number from 1–100
+#                Type is one of the following, listed alongside its options:
+#                  PotionEffect:
+#                    Options: Name:Duration(in ticks, 1/20th of a second):Amplifier
+#                    (Potion names: SPEED, SLOW, FAST_DIGGING, SLOW_DIGGING,
+#                     INCREASE_DAMAGE, HEAL, HARM, JUMP, CONFUSION, REGENERATION,
+#                     DAMAGE_RESISTANCE, FIRE_RESISTANCE, WATER_BREATHING, INVISIBILITY,
+#                     BLINDNESS, NIGHT_VISION, HUNGER, WEAKNESS, POISON, WITHER,
+#                     HEALTH_BOOST, ABSORPTION, SATURATION)
+#              Example:
+#                effects: ['50:PotionEffect:HEAL:30:1']
+#                A healing potion effect with a 50% change to affect the player,
+#                lasting 1.5 seconds with an amplifier of 1
 # strings: Messages sent to the player
 #   headshot-shooter: The message to be sent to the shooter if they headshot a player
 #                     ('%s' is replaced by the target player's name)
@@ -49,11 +64,16 @@ hitboxes:
   head:
     above: 1.5
     multiplier: 2.0
+    effects: []
   torso:
     multiplier: 1.0
+    effects:
+    - 10:PotionEffect:WITHER:30:0
   legs:
     below: 0.8
     multiplier: 0.7
+    effects:
+    - 75:PotionEffect:SLOW:20:0
 strings:
   headshot-shooter: '&eYou have headshotted %s!'
   headshot-player: '&cYou have been headshotted by %s!'

@@ -20,14 +20,18 @@ package me.hoot215.headshot;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Random;
 import java.util.WeakHashMap;
 
 import me.hoot215.headshot.metrics.Metrics;
 import me.hoot215.headshot.metrics.Metrics.Graph;
 import me.hoot215.updater.AutoUpdater;
 
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class Headshot extends JavaPlugin
   {
@@ -52,6 +56,84 @@ public class Headshot extends JavaPlugin
     public void setLastHeadshot (Player player, Hit hit)
       {
         headshots.put(player, hit);
+      }
+    
+    public void applyEffect (LivingEntity entity, String effect)
+      {
+        String[] args = effect.split(":");
+        int probability = 100;
+        try
+          {
+            int i = Integer.parseInt(args[0]);
+            if (i >= 1 && i <= 100)
+              {
+                probability = i;
+              }
+            else
+              {
+                this.getLogger().warning(
+                    "Probability cannot be less than 1 or greater than 100");
+              }
+          }
+        catch (NumberFormatException e)
+          {
+            this.getLogger().warning(e + " is not a valid integer");
+          }
+        if (new Random().nextInt(100) + 1 > probability)
+          return;
+        String type = args[1];
+        if (type.equals("PotionEffect"))
+          {
+            PotionEffectType potionEffectType =
+                PotionEffectType.getByName(args[2]);
+            if (potionEffectType == null)
+              {
+                this.getLogger().severe(
+                    args[2] + " is not a valid PotionEffectType");
+                return;
+              }
+            int duration = 20;
+            try
+              {
+                int i = Integer.parseInt(args[3]);
+                if (i >= 1)
+                  {
+                    duration = i;
+                  }
+                else
+                  {
+                    this.getLogger().warning("Duration cannot be less than 1");
+                  }
+              }
+            catch (NumberFormatException e)
+              {
+                this.getLogger().warning(args[3] + " is not a valid integer");
+              }
+            int amplifier = 0;
+            try
+              {
+                int i = Integer.parseInt(args[4]);
+                if (i >= 0)
+                  {
+                    amplifier = i;
+                  }
+                else
+                  {
+                    this.getLogger().warning("Amplifier cannot be less than 0");
+                  }
+              }
+            catch (NumberFormatException e)
+              {
+                this.getLogger().warning(args[4] + " is not a valid integer");
+              }
+            PotionEffect potionEffect =
+                potionEffectType.createEffect(duration, amplifier);
+            entity.addPotionEffect(potionEffect);
+          }
+        else
+          {
+            this.getLogger().severe(type + " is not a valid effect type");
+          }
       }
     
     @Override
