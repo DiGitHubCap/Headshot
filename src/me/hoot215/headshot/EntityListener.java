@@ -87,13 +87,19 @@ public class EntityListener implements Listener
                             '&',
                             plugin.getConfig().getString(
                                 "strings.headshot-shooter")), player.getName());
-                    shooter.sendMessage(shooterMessage);
+                    if ( !shooterMessage.isEmpty())
+                      {
+                        shooter.sendMessage(shooterMessage);
+                      }
                     String playerMessage =
                         String.format(ChatColor.translateAlternateColorCodes(
                             '&',
                             plugin.getConfig().getString(
                                 "strings.headshot-player")), shooter.getName());
-                    player.sendMessage(playerMessage);
+                    if ( !playerMessage.isEmpty())
+                      {
+                        player.sendMessage(playerMessage);
+                      }
                     messaged = true;
                   }
               }
@@ -121,13 +127,19 @@ public class EntityListener implements Listener
                             '&',
                             plugin.getConfig().getString(
                                 "strings.headshot-shooter")), player.getName());
-                    shooter.sendMessage(shooterMessage);
+                    if ( !shooterMessage.isEmpty())
+                      {
+                        shooter.sendMessage(shooterMessage);
+                      }
                     String playerMessage =
                         String.format(ChatColor.translateAlternateColorCodes(
                             '&',
                             plugin.getConfig().getString(
                                 "strings.headshot-player")), shooter.getName());
-                    player.sendMessage(playerMessage);
+                    if ( !playerMessage.isEmpty())
+                      {
+                        player.sendMessage(playerMessage);
+                      }
                   }
               }
             // Legs

@@ -39,12 +39,22 @@ public class PlayerListener implements Listener
         Hit lastHeadshot = plugin.getLastHeadshot(event.getEntity());
         if (lastHeadshot.getEvent() == event.getEntity().getLastDamageCause())
           {
-            event.setDeathMessage(String.format(ChatColor
-                .translateAlternateColorCodes('&', plugin.getConfig()
-                    .getString("strings.headshot-death-message")), player
-                .getName(), ((Player) ((Arrow) lastHeadshot.getEvent()
-                .getDamager()).getShooter()).getName(), String
-                .valueOf((int) lastHeadshot.getDistance())));
+            String deathMessage =
+                String.format(ChatColor.translateAlternateColorCodes(
+                    '&',
+                    plugin.getConfig().getString(
+                        "strings.headshot-death-message")), player.getName(),
+                    ((Player) ((Arrow) lastHeadshot.getEvent().getDamager())
+                        .getShooter()).getName(), String
+                        .valueOf((int) lastHeadshot.getDistance()));
+            if ( !deathMessage.isEmpty())
+              {
+                event.setDeathMessage(deathMessage);
+              }
+            else
+              {
+                event.setDeathMessage(null);
+              }
           }
       }
   }
