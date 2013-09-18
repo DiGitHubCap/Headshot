@@ -40,7 +40,7 @@ public class AutoUpdaterPlayerListener implements Listener
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerJoin (PlayerJoinEvent event)
       {
-        if ( !autoUpdater.isUpToDate() && !autoUpdater.hasDownloaded())
+        if ( !autoUpdater.isUpToDate())
           {
             final String playerName = event.getPlayer().getName();
             plugin.getServer().getScheduler()

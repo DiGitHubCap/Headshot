@@ -18,13 +18,9 @@
 
 package me.hoot215.updater;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,19 +30,16 @@ import org.bukkit.plugin.Plugin;
 public class AutoUpdater implements Runnable
   {
     public final int REVISION = 4; // Auto-updater revision number
-    public final boolean VANILLA = true; // Whether or not this is my vanilla
+    public final boolean VANILLA = false; // Whether or not this is my vanilla
                                          // auto-updater
     private final Plugin plugin;
     private final String pluginName;
     private final URL versionUrl;
-    private final String downloadUrl;
     private final String localVersion;
     private String remoteVersion;
     private final String site;
     private final AtomicBoolean upToDate = new AtomicBoolean(true);
     private final AutoUpdaterPlayerListener playerListener;
-    private final boolean download;
-    private final AtomicBoolean downloaded = new AtomicBoolean(false);
     
     public AutoUpdater(Plugin instance)
       {
@@ -65,14 +58,10 @@ public class AutoUpdater implements Runnable
             versionUrl = null;
           }
         this.versionUrl = versionUrl;
-        downloadUrl =
-            "http://dl.dropbox.com/u/56151340/BukkitPlugins/" + pluginName
-                + "/v{version}/" + pluginName + ".jar";
         localVersion = plugin.getDescription().getVersion();
         String site = plugin.getDescription().getWebsite();
         this.site = site == null ? "" : site;
         playerListener = new AutoUpdaterPlayerListener(this);
-        download = plugin.getConfig().getBoolean("auto-update-download");
       }
     
     public Plugin getPlugin ()
@@ -100,16 +89,6 @@ public class AutoUpdater implements Runnable
         return upToDate.get();
       }
     
-    public boolean canDownload ()
-      {
-        return download;
-      }
-    
-    public boolean hasDownloaded ()
-      {
-        return downloaded.get();
-      }
-    
     public void start ()
       {
         plugin.getServer().getPluginManager()
@@ -125,10 +104,7 @@ public class AutoUpdater implements Runnable
               break;
             try
               {
-                if (this.updateCheck() && download)
-                  {
-                    this.downloadLatestVersion();
-                  }
+                this.updateCheck();
                 Thread.sleep(3600000L);
               }
             catch (InterruptedException e)
@@ -188,53 +164,6 @@ public class AutoUpdater implements Runnable
               }
           }
         return false;
-      }
-    
-    public synchronized void downloadLatestVersion ()
-      {
-        FileOutputStream fos = null;
-        try
-          {
-            if (remoteVersion == null)
-              {
-                this.updateCheck();
-              }
-            plugin.getLogger().info("Downloading latest version...");
-            ReadableByteChannel rbc =
-                Channels.newChannel(new URL(downloadUrl.replace("{version}",
-                    remoteVersion)).openStream());
-            fos =
-                new FileOutputStream("plugins" + File.separator + pluginName
-                    + ".jar");
-            fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-          }
-        catch (MalformedURLException e)
-          {
-            e.printStackTrace();
-          }
-        catch (IOException e)
-          {
-            e.printStackTrace();
-          }
-        finally
-          {
-            if (fos != null)
-              {
-                try
-                  {
-                    fos.close();
-                    plugin.getLogger().info(
-                        "Latest version has finished downloading");
-                    plugin.getLogger().info(
-                        "Changes will take effect on restart");
-                  }
-                catch (IOException e)
-                  {
-                    e.printStackTrace();
-                  }
-              }
-            downloaded.set(true);
-          }
       }
     
     private boolean compareVersions ()
