@@ -201,7 +201,10 @@ public class Headshot extends JavaPlugin
             e.printStackTrace();
           }
         
-        new AutoUpdater(this).start();
+        if (this.getConfig().getBoolean("auto-update-notify"))
+          {
+            new AutoUpdater(this).start();
+          }
         
         this.getLogger().info("Is now enabled");
       }
