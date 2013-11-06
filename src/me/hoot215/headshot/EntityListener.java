@@ -36,6 +36,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 
 public class EntityListener implements Listener
@@ -104,16 +105,20 @@ public class EntityListener implements Listener
                   }
               }
           }
-        if (plugin.getConfig().getBoolean("hitboxes.enabled"))
+        boolean damage = plugin.getConfig().getBoolean("hitboxes.enabled");
+        Location relative = loc.clone().subtract(entity.getLocation());
+        // Head
+        double value = event.getDamage();
+        if (relative.getY() >= plugin.getConfig().getDouble(
+            "hitboxes.head.above"))
           {
-            Location relative = loc.clone().subtract(entity.getLocation());
-            // Head
-            if (relative.getY() >= plugin.getConfig().getDouble(
-                "hitboxes.head.above"))
+            if (damage)
               {
                 announce = true;
-                event.setDamage(event.getDamage()
-                    * plugin.getConfig().getDouble("hitboxes.head.multiplier"));
+                value =
+                    value
+                        * plugin.getConfig().getDouble(
+                            "hitboxes.head.multiplier");
                 for (String s : plugin.getConfig().getStringList(
                     "hitboxes.head.effects"))
                   {
@@ -142,31 +147,105 @@ public class EntityListener implements Listener
                       }
                   }
               }
-            // Legs
-            else if (relative.getY() <= plugin.getConfig().getDouble(
-                "hitboxes.legs.below"))
+            if (entity instanceof Player)
               {
-                event.setDamage(event.getDamage()
-                    * plugin.getConfig().getDouble("hitboxes.legs.multiplier"));
+                ItemStack item = ((Player) entity).getInventory().getHelmet();
+                if (item != null)
+                  {
+                    value =
+                        value
+                            / plugin.getConfig().getDouble(
+                                "armour-damage-divisor." + item, 1);
+                  }
+              }
+          }
+        // Feet
+        else if (relative.getY() <= plugin.getConfig().getDouble(
+            "hitboxes.feet.below"))
+          {
+            if (damage)
+              {
+                value =
+                    value
+                        * plugin.getConfig().getDouble(
+                            "hitboxes.feet.multiplier");
+                for (String s : plugin.getConfig().getStringList(
+                    "hitboxes.feet.effects"))
+                  {
+                    plugin.applyEffect(entity, s);
+                  }
+              }
+            if (entity instanceof Player)
+              {
+                ItemStack item = ((Player) entity).getInventory().getBoots();
+                if (item != null)
+                  {
+                    value =
+                        value
+                            / plugin.getConfig().getDouble(
+                                "armour-damage-divisor." + item, 1);
+                  }
+              }
+          }
+        // Legs
+        else if (relative.getY() <= plugin.getConfig().getDouble(
+            "hitboxes.legs.below"))
+          {
+            if (damage)
+              {
+                value =
+                    value
+                        * plugin.getConfig().getDouble(
+                            "hitboxes.legs.multiplier");
                 for (String s : plugin.getConfig().getStringList(
                     "hitboxes.legs.effects"))
                   {
                     plugin.applyEffect(entity, s);
                   }
               }
-            // Torso
-            else
+            if (entity instanceof Player)
               {
-                event
-                    .setDamage(event.getDamage()
+                ItemStack item = ((Player) entity).getInventory().getLeggings();
+                if (item != null)
+                  {
+                    value =
+                        value
+                            / plugin.getConfig().getDouble(
+                                "armour-damage-divisor." + item, 1);
+                  }
+              }
+          }
+        // Torso
+        else
+          {
+            if (damage)
+              {
+                value =
+                    value
                         * plugin.getConfig().getDouble(
-                            "hitboxes.torso.multiplier"));
+                            "hitboxes.torso.multiplier");
                 for (String s : plugin.getConfig().getStringList(
                     "hitboxes.torso.effects"))
                   {
                     plugin.applyEffect(entity, s);
                   }
               }
+            if (entity instanceof Player)
+              {
+                ItemStack item =
+                    ((Player) entity).getInventory().getChestplate();
+                if (item != null)
+                  {
+                    value =
+                        value
+                            / plugin.getConfig().getDouble(
+                                "armour-damage-divisor." + item, 1);
+                  }
+              }
+          }
+        if (value != event.getDamage())
+          {
+            event.setDamage(value);
           }
         if (entity instanceof Player)
           {
