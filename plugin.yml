@@ -14,3 +14,6 @@ permissions:
   headshot:
     description: 'Allows players to headshot other players'
     default: true
+  headshot.bypass.reload-time:
+    description: 'Allows the player to bypass bow cooldown'
+    default: op

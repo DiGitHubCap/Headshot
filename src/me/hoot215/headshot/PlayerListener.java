@@ -19,16 +19,42 @@
 package me.hoot215.headshot;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class PlayerListener implements Listener
   {
     private final Headshot plugin = Headshot.getInstance();
+    
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerInteract (PlayerInteractEvent event)
+      {
+        if (event.getAction() != Action.RIGHT_CLICK_AIR
+            && event.getAction() != Action.RIGHT_CLICK_BLOCK)
+          return;
+        ItemStack hand = event.getItem();
+        if (hand != null && hand.getType() == Material.BOW)
+          {
+            Player player = (Player) event.getPlayer();
+            if ( !player.hasPermission("headshot.bypass.reload-time"))
+              {
+                if (plugin.isCoolingDown(player))
+                  {
+                    event.setCancelled(true);
+                    player.sendMessage(plugin.getConfig().getString(
+                        "general.reload-message"));
+                  }
+              }
+          }
+      }
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerDeath (PlayerDeathEvent event)

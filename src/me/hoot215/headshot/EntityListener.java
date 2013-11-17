@@ -36,12 +36,29 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 
 public class EntityListener implements Listener
   {
     private final Headshot plugin = Headshot.getInstance();
+    
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onEntityShootBow (EntityShootBowEvent event)
+      {
+        if ( ! (event.getEntity() instanceof Player))
+          return;
+        Player player = (Player) event.getEntity();
+        if ( !player.hasPermission("headshot.bypass.reload-time"))
+          {
+            long cooldown =
+                plugin.getConfig().getLong("general.reload-time", 0) * 50;
+            if (cooldown == 0)
+              return;
+            plugin.setCooldown(player, System.currentTimeMillis() + cooldown);
+          }
+      }
     
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onEntityDamageByEntity (EntityDamageByEntityEvent event)

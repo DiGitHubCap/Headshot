@@ -20,8 +20,11 @@ package me.hoot215.headshot;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import me.hoot215.headshot.metrics.Metrics;
 import me.hoot215.headshot.metrics.Metrics.Graph;
@@ -37,6 +40,8 @@ public class Headshot extends JavaPlugin
   {
     private static Headshot instance;
     private final Map<Player, Hit> headshots = new WeakHashMap<Player, Hit>();
+    private final Map<String, Long> cooldowns =
+        new ConcurrentHashMap<String, Long>();
     
     public static Headshot getInstance ()
       {
@@ -56,6 +61,26 @@ public class Headshot extends JavaPlugin
     public void setLastHeadshot (Player player, Hit hit)
       {
         headshots.put(player, hit);
+      }
+    
+    public boolean isCoolingDown (Player player)
+      {
+        if (cooldowns.containsKey(player.getName()))
+          {
+            return cooldowns.get(player.getName()) > System.currentTimeMillis();
+          }
+        else
+          return false;
+      }
+    
+    public long getCooldown (Player player)
+      {
+        return cooldowns.get(player.getName());
+      }
+    
+    public void setCooldown (Player player, long cooldown)
+      {
+        cooldowns.put(player.getName(), cooldown);
       }
     
     public void applyEffect (LivingEntity entity, String effect)
@@ -160,6 +185,8 @@ public class Headshot extends JavaPlugin
         this.getServer().getPluginManager()
             .registerEvents(new ProjectileListener(), this);
         
+        new CooldownClearer().start();
+        
         try
           {
             Metrics metrics = new Metrics(this);
@@ -207,5 +234,39 @@ public class Headshot extends JavaPlugin
           }
         
         this.getLogger().info("Is now enabled");
+      }
+    
+    private final class CooldownClearer implements Runnable
+      {
+        public void start ()
+          {
+            new Thread(this).start();
+          }
+        
+        @Override
+        public void run ()
+          {
+            while (instance != null)
+              {
+                Iterator<Entry<String, Long>> iter =
+                    cooldowns.entrySet().iterator();
+                while (iter.hasNext())
+                  {
+                    Entry<String, Long> e = iter.next();
+                    if (e.getValue() <= System.currentTimeMillis())
+                      {
+                        iter.remove();
+                      }
+                  }
+              }
+            try
+              {
+                Thread.sleep(3600000);
+              }
+            catch (InterruptedException e)
+              {
+                e.printStackTrace();
+              }
+          }
       }
   }
