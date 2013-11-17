@@ -90,7 +90,7 @@ hitboxes:
     below: 0.4
     multiplier: 0.5
     effects:
-      - 75:PotionEffect:SLOW:30:0
+    - 75:PotionEffect:SLOW:30:0
 armour-damage-divisor:
   LEATHER_HELMET: 1.1
   LEATHER_CHESPLATE: 1.1
