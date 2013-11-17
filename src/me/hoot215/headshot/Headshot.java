@@ -19,10 +19,12 @@
 package me.hoot215.headshot;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,6 +32,8 @@ import me.hoot215.headshot.metrics.Metrics;
 import me.hoot215.headshot.metrics.Metrics.Graph;
 import me.hoot215.updater.AutoUpdater;
 
+import org.bukkit.Effect;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -42,6 +46,8 @@ public class Headshot extends JavaPlugin
     private final Map<Player, Hit> headshots = new WeakHashMap<Player, Hit>();
     private final Map<String, Long> cooldowns =
         new ConcurrentHashMap<String, Long>();
+    private final Set<Arrow> arrows = new HashSet<Arrow>();
+    private int effectMakerTask = 0;
     
     public static Headshot getInstance ()
       {
@@ -81,6 +87,31 @@ public class Headshot extends JavaPlugin
     public void setCooldown (Player player, long cooldown)
       {
         cooldowns.put(player.getName(), cooldown);
+      }
+    
+    public void addArrow (Arrow arrow)
+      {
+        arrows.add(arrow);
+      }
+    
+    public void removeArrow (Arrow arrow)
+      {
+        arrows.remove(arrow);
+      }
+    
+    public void updateEffectMaker ()
+      {
+        if (effectMakerTask == 0 && arrows.size() > 0)
+          {
+            effectMakerTask =
+                this.getServer().getScheduler()
+                    .scheduleSyncRepeatingTask(this, new EffectMaker(), 0, 1);
+          }
+        else if (effectMakerTask > 0 && arrows.size() == 0)
+          {
+            this.getServer().getScheduler().cancelTask(effectMakerTask);
+            effectMakerTask = 0;
+          }
       }
     
     public void applyEffect (LivingEntity entity, String effect)
@@ -267,6 +298,27 @@ public class Headshot extends JavaPlugin
               {
                 e.printStackTrace();
               }
+          }
+      }
+    
+    private final class EffectMaker implements Runnable
+      {
+        @Override
+        public void run ()
+          {
+            Iterator<Arrow> iter = arrows.iterator();
+            while (iter.hasNext())
+              {
+                Arrow arrow = iter.next();
+                if (arrow.isOnGround() || arrow.isDead())
+                  {
+                    iter.remove();
+                    continue;
+                  }
+                arrow.getWorld().playEffect(arrow.getLocation(),
+                    Effect.MOBSPAWNER_FLAMES, 0, 256);
+              }
+            updateEffectMaker();
           }
       }
   }

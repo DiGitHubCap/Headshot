@@ -12,6 +12,7 @@
 #   reload-time: The cooldown time after firing a bow in ticks (1/20th of a second)
 #   reload-message: The message to be sent to the player if they try to fire their
 #                   bow while still on cooldown
+#   particle-trail: Whether or not to give arrows a trail of smoke and fire particles
 # distance:
 #   enabled: Whether or not damage accumulation based on distance is enabled
 #   considered-headshot: Whether or not damage accumulation is considered a headshot
@@ -62,7 +63,8 @@
 auto-update-notify: true
 general:
   reload-time: 0
-  reload-message: '§cYour bow is still reloading'
+  reload-message: '&cYour bow is still reloading'
+  particle-trail: false
 distance:
   enabled: true
   considered-headshot: true

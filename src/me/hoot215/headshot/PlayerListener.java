@@ -49,8 +49,11 @@ public class PlayerListener implements Listener
                 if (plugin.isCoolingDown(player))
                   {
                     event.setCancelled(true);
-                    player.sendMessage(plugin.getConfig().getString(
-                        "general.reload-message"));
+                    player
+                        .sendMessage(ChatColor.translateAlternateColorCodes(
+                            '&',
+                            plugin.getConfig().getString(
+                                "general.reload-message")));
                   }
               }
           }

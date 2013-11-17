@@ -49,6 +49,12 @@ public class EntityListener implements Listener
       {
         if ( ! (event.getEntity() instanceof Player))
           return;
+        if (plugin.getConfig().getBoolean("general.particle-trail")
+            && event.getProjectile() instanceof Arrow)
+          {
+            plugin.addArrow((Arrow) event.getProjectile());
+            plugin.updateEffectMaker();
+          }
         Player player = (Player) event.getEntity();
         if ( !player.hasPermission("headshot.bypass.reload-time"))
           {
