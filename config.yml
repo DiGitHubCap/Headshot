@@ -54,7 +54,7 @@
 #   headshot-player: The message to be sent to the player if they are headshotted
 #                    ('%s' is replaced by the shooter's name)
 #   headshot-death-message: The replacement for the default death message when a
-#                           a player headshots another
+#                           player headshots another
 #                           (The first '%s' is replaced by the target player's name,
 #                           the second '%s' is replaced by the shooter's name, and
 #                           the third '%s' is replaced by the distance the
