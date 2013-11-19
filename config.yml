@@ -7,7 +7,7 @@
 # without any warranty.
 # 
 # 
-# auto-update-notify: Whether or not to automatically notify admins of new updates
+# auto-update: Whether or not to automatically update the plugin
 # general:
 #   reload-time: The cooldown time after firing a bow in ticks (1/20th of a second)
 #   reload-message: The message to be sent to the player if they try to fire their
@@ -60,7 +60,7 @@
 #                           the third '%s' is replaced by the distance the
 #                           arrow travelled)
 
-auto-update-notify: true
+auto-update: true
 general:
   reload-time: 0
   reload-message: '&cYour bow is still reloading'

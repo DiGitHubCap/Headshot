@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import me.hoot215.headshot.metrics.Metrics;
 import me.hoot215.headshot.metrics.Metrics.Graph;
-import me.hoot215.updater.AutoUpdater;
+import me.hoot215.updater.Updater;
 
 import org.bukkit.Effect;
 import org.bukkit.entity.Arrow;
@@ -259,9 +259,10 @@ public class Headshot extends JavaPlugin
             e.printStackTrace();
           }
         
-        if (this.getConfig().getBoolean("auto-update-notify"))
+        if (this.getConfig().getBoolean("auto-update"))
           {
-            new AutoUpdater(this).start();
+            new Updater(this, 63997, this.getFile(),
+                Updater.UpdateType.DEFAULT, false);
           }
         
         this.getLogger().info("Is now enabled");
